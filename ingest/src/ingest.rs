@@ -56,18 +56,17 @@ impl Ingester {
 
         loop {
             if tip_block_num >= next_block {
-                let block = self
-                    .client
-                    .send(GetBlockByNumber(next_block.into()).into());
-                
-                let receipts = self
-                    .client
-                    .send(GetBlockReceipts(next_block.into()).into());
+                let block = self.client.send(GetBlockByNumber(next_block.into()).into());
+
+                let receipts = self.client.send(GetBlockReceipts(next_block.into()).into());
 
                 let (block, receipts) = futures::join!(block, receipts);
 
                 let block = block.context("get block data")?.try_into_single().unwrap();
-                let receipts = receipts.context("get block receipts")?.try_into_single().unwrap();
+                let receipts = receipts
+                    .context("get block receipts")?
+                    .try_into_single()
+                    .unwrap();
 
                 log::trace!("downloaded data for block {}", next_block);
 
