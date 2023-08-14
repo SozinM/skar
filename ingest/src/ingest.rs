@@ -59,17 +59,10 @@ impl Ingester {
                 let block = self
                     .client
                     .send(GetBlockByNumber(next_block.into()).into());
-                    // .await
-                    // .context("get block data")?
-                    // .try_into_single()
-                    // .unwrap();
+                
                 let receipts = self
                     .client
                     .send(GetBlockReceipts(next_block.into()).into());
-                    // .await
-                    // .context("get block receipts")?
-                    // .try_into_single()
-                    // .unwrap();
 
                 let (block, receipts) = futures::join!(block, receipts);
 
